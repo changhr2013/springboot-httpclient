@@ -1,5 +1,6 @@
 package com.changhr.httpclientgo.service;
 
+import com.changhr.httpclientgo.http.IdleConnectionMonitorThread;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
@@ -78,6 +79,12 @@ public class HttpClientManagerFactoryBean
                 .setKeepAliveStrategy(connectionKeepAliveStrategy)
                 .setDefaultRequestConfig(requestConfig)
                 .build();
+
+        // 初始化监视线程
+        IdleConnectionMonitorThread monitorThread = new IdleConnectionMonitorThread(httpClientConnectionManager);
+        // 将监视线程设为守护线程并启动
+        monitorThread.setDaemon(true);
+        monitorThread.start();
     }
 
     /**

@@ -7,6 +7,8 @@ import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.message.BasicHeaderElementIterator;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +21,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class ConnectionKeepAliveStrategyConf {
+
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionKeepAliveStrategyConf.class);
 
     @Value("${http.client.keepAliveTime}")
     private int keepAliveTime = 30;
@@ -39,7 +43,8 @@ public class ConnectionKeepAliveStrategyConf {
                         try{
                             return Long.parseLong(value) * 1000;
                         }catch (NumberFormatException ignore){
-
+                            logger.error(ignore.getMessage(), ignore);
+                            throw new RuntimeException(ignore);
                         }
                     }
                 }
